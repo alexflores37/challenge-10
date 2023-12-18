@@ -1,30 +1,42 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const { Svg, Circle, Rect, Text } = require('svg-builder');
+const { createSVG } = require('svg-builder');
 
 // Function to generate SVG based on user input
 function generateLogo({ color, shape, text }) {
-  const svg = new Svg();
-  const fillColor = color.toLowerCase();
-
-  switch (shape) {
-    case 'circle':
-      svg.add(new Circle({ cx: 50, cy: 50, r: 40, fill: fillColor }));
-      break;
-    case 'rectangle':
-      svg.add(new Rect({ x: 10, y: 10, width: 80, height: 80, fill: fillColor }));
-      break;
-    default:
-      console.error('Invalid shape selected.');
-      process.exit(1);
+    const fillColor = color.toLowerCase();
+  
+    const svg = new SvgBuilder({
+      width: 100,
+      height: 100,
+      elements: [
+        {
+          type: shape,
+          attributes: {
+            cx: 50,
+            cy: 50,
+            r: shape === 'circle' ? 40 : undefined,
+            width: shape === 'rectangle' ? 80 : undefined,
+            height: shape === 'rectangle' ? 80 : undefined,
+            fill: fillColor,
+          },
+        },
+      ],
+    });
+  
+    if (text) {
+      svg.addText({
+        x: 50,
+        y: 50,
+        text,
+        fill: 'white',
+        'text-anchor': 'middle',
+        'alignment-baseline': 'middle',
+      });
+    }
+  
+    return svg.toString();
   }
-
-  if (text) {
-    svg.add(new Text({ x: 50, y: 50, text, fill: 'white', 'text-anchor': 'middle', 'alignment-baseline': 'middle' }));
-  }
-
-  return svg.toString();
-}
 
 // Function to save SVG to a file
 function saveLogoToFile(svgString, filename) {
@@ -45,7 +57,7 @@ inquirer
       type: 'list',
       name: 'shape',
       message: 'Select a shape for the logo:',
-      choices: ['Circle', 'Rectangle'],
+      choices: ['circle', 'rectangle'],
     },
     {
       type: 'input',
