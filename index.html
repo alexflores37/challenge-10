@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Logo Maker</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #logo-container {
+      width: 300px;
+      height: 300px;
+    }
+    #download-btn {
+      margin-top: 20px;
+      padding: 10px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="logo-container">
+    <!-- SVG will be inserted here -->
+  </div>
+  <button id="download-btn">Download SVG</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const svgContainer = document.getElementById('logo-container');
+      const downloadBtn = document.getElementById('download-btn');
+
+      // Initial SVG content
+      let svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+        </svg>
+      `;
+
+      // Set initial SVG content
+      svgContainer.innerHTML = svgContent;
+
+      // Event listener for the download button
+      downloadBtn.addEventListener('click', function() {
+        const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+
+        // Create a link element, set its attributes, and trigger a click event
+        const downloadLink = document.createElement('a');
+        downloadLink.href = svgUrl;
+        downloadLink.download = 'logo.svg';
+        downloadLink.click();
+
+        // Release the object URL
+        URL.revokeObjectURL(svgUrl);
+      });
+    });
+  </script>
+</body>
+</html>
